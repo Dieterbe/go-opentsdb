@@ -28,7 +28,7 @@ Valid formats for Time are:
 	Absolute (see: http://opentsdb.net/docs/build/html/user_guide/query/index.html#absolute-formatted-time)
 */
 type Time struct {
-	time   time.Time
+	Time   time.Time
 	format string
 	string
 }
@@ -52,10 +52,10 @@ func (t *Time) UnmarshalJSON(inJSON []byte) error {
 func (t *Time) MarshalJSON() ([]byte, error) {
 	switch t.format {
 	case "":         return nil, nil
-	case "Unix":     return json.Marshal(t.time.Unix())
+	case "Unix":     return json.Marshal(t.Time.Unix())
 	case "Absolute": return json.Marshal(t.AbsoluteTime())
 	case "Relative": return json.Marshal(t.string)
-	default:         return json.Marshal(t.time.Unix())
+	default:         return json.Marshal(t.Time.Unix())
 	}
 }
 
@@ -131,30 +131,30 @@ func isUnixTime(timeIn string) bool {
 func (t *Time) fromAbsoluteTime(timeIn string) (err error) {
 	t.format = "Absolute"
 	t.string = timeIn
-	t.time, err = time.Parse("2006/01/02-15:04:05", timeIn)
+	t.Time, err = time.Parse("2006/01/02-15:04:05", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02 15:04:05", timeIn)
+	t.Time, err = time.Parse("2006/01/02 15:04:05", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02-15:04", timeIn)
+	t.Time, err = time.Parse("2006/01/02-15:04", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02 15:04", timeIn)
+	t.Time, err = time.Parse("2006/01/02 15:04", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02-15", timeIn)
+	t.Time, err = time.Parse("2006/01/02-15", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02 15", timeIn)
+	t.Time, err = time.Parse("2006/01/02 15", timeIn)
 	if err == nil { return }
-	t.time, err = time.Parse("2006/01/02", timeIn)
+	t.Time, err = time.Parse("2006/01/02", timeIn)
 	return
 }
 
 // AbsoluteTime returns the string version of a Time in Absolute format.
 func (t *Time) AbsoluteTime() (string) {
 	switch {
-	case t.time.Second() > 0: return t.time.Format("2006/01/02-15:04:05")
-	case t.time.Minute() > 0: return t.time.Format("2006/01/02-15:04")
-	case t.time.Hour()   > 0: return t.time.Format("2006/01/02-15")
+	case t.Time.Second() > 0: return t.Time.Format("2006/01/02-15:04:05")
+	case t.Time.Minute() > 0: return t.Time.Format("2006/01/02-15:04")
+	case t.Time.Hour()   > 0: return t.Time.Format("2006/01/02-15")
 	}
-	return t.time.Format("2006/01/02")
+	return t.Time.Format("2006/01/02")
 }
 
 // fromRelativeTime parses the provided timeIn string and if possible
@@ -167,7 +167,7 @@ func (t *Time) fromRelativeTime(timeIn string) error {
 
 // RelativeTime returns the string version of a Time in Relative format.
 func (t *Time) RelativeTime() (string) {
-	return t.time.Format("2006/01/02-15:04:05")
+	return t.Time.Format("2006/01/02-15:04:05")
 }
 
 // fromUnixTime parses the provided timeIn string and if possible
@@ -178,7 +178,7 @@ func (t *Time) fromUnixTime(timeIn string) (err error) {
 	var timeInInt64 int64
 	timeInInt64, err = strconv.ParseInt(timeIn, 10, 64)
 	if err != nil { return err }
-	t.time = time.Unix(timeInInt64, 0)
+	t.Time = time.Unix(timeInInt64, 0)
 	return nil
 }
 
